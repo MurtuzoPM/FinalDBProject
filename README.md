@@ -64,7 +64,7 @@ This keeps the project's libraries organized.
 - **`sql/`**: Contains individual scripts if you want to run them manually (Schema, Seed, Views, etc.).
 - **`pharmacy_dump.sql`**: The full database backup.
 - **`app.py`**: The main code for the web application.
-- **`reports/project_report.md`**: Your technical project report (Normalization, AI disclosure, etc.).
+- **`reports/project_report.html`**: Your technical project report (Normalization, AI disclosure, etc.).
 - **`reports/defense_slides.html`**: Open this in your browser for your presentation.
 - **`COMP2082_FinalProject_Mamadziyoev_Murtuzo.zip`**: The final archive for submission.
 
