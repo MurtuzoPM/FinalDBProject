@@ -73,3 +73,23 @@ This keeps the project's libraries organized.
 ## 🛠 Troubleshooting
 - **Database Connection**: If the app fails to start, open `app.py` and ensure the `DB_CONFIG` (host, user, password) matches your PostgreSQL settings.
 - **Port 5000 Busy**: If you get a "port already in use" error, try running `python app.py` again or restart your computer.
+
+---
+
+## 📸 Visual Walkthrough
+
+### 1. Inventory Management
+The system provides a real-time view of all medicines, their categories, and prescription requirements.
+![Medicine Inventory](static/screenshots/image.png)
+
+### 2. Patient Records
+Secure storage of patient information including Kyrgyz-specific contact details and medical history.
+![Patient Records](static/screenshots/4.png)
+
+### 3. Sales Processing
+A streamlined interface for creating new sales, ensuring inventory is updated atomically.
+![New Sale](static/screenshots/2.png)
+
+### 4. Sales History
+Comprehensive audit trail of all transactions for reporting and management.
+![Sales History](static/screenshots/3.png)
