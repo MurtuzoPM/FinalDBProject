@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Medicine Inventory</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Generic Name</th>
+            <th>Category</th>
+            <th>Manufacturer</th>
+            <th>Prescription Required?</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for medicine in medicines %}
+        <tr>
+            <td>{{ medicine.name }}</td>
+            <td>{{ medicine.generic_name }}</td>
+            <td>{{ medicine.category_name }}</td>
+            <td>{{ medicine.manufacturer }}</td>
+            <td>{{ 'Yes' if medicine.requires_prescription else 'No' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

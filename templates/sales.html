@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Sales History</h2>
+    <a href="/add_sale" class="btn btn-success">Record New Sale</a>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Patient</th>
+            <th>Pharmacist</th>
+            <th>Amount</th>
+            <th>Method</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sale in sales %}
+        <tr>
+            <td>{{ sale.sale_id }}</td>
+            <td>{{ sale.sale_date.strftime('%Y-%m-%d %H:%M') if sale.sale_date else '' }}</td>
+            <td>{{ sale.patient_name or 'Walk-in' }}</td>
+            <td>{{ sale.employee_name }}</td>
+            <td>{{ sale.total_amount }} KGS</td>
+            <td>{{ sale.payment_method }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
