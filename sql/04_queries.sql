@@ -72,4 +72,4 @@ FROM patients pat
 JOIN prescriptions pr ON pat.patient_id = pr.patient_id
 JOIN prescription_items pi ON pr.prescription_id = pi.prescription_id
 JOIN medicines m ON pi.medicine_id = m.medicine_id
-WHERE pat.patient_id = 1;
+WHERE pat.patient_id = 2;

@@ -1,64 +1,105 @@
-# Project Report: Pharmacy Inventory & Prescription System
+# Project Report: Naryn Central Pharmacy Inventory & Prescription System
+
+**Date**: May 18, 2026
+**Team**: Jules (Individual Project)
+**Course**: COMP 2082 - Database Management Systems
+
+---
 
 ## 1. Problem Description and Scope
-The Naryn Central Pharmacy Project aims to digitize the operations of a local pharmacy in Naryn, Kyrgyzstan. The system manages medicine inventory, tracks stock levels and expiry dates, handles prescriptions issued by healthcare providers, and processes sales transactions.
+The **Naryn Central Pharmacy System** is designed to address the operational challenges of a mid-sized pharmacy in the Naryn region of Kyrgyzstan. Currently, many local pharmacies rely on manual ledger entries or simple spreadsheets, leading to errors in expiry tracking, stockouts of critical medicine, and difficulty in auditing prescription-only drug sales.
 
-### Scope:
-- **Inventory Management**: Track medicines, categories, and stock batches with expiry dates.
-- **Supplier Relations**: Manage supplier contacts and procurement history.
-- **Patient Records**: Maintain basic demographic information for patients.
-- **Prescription Tracking**: Record and verify prescriptions for restricted medicines.
-- **Sales Processing**: Handle sales transactions and maintain financial records.
+### Objectives:
+- **Inventory Control**: Real-time tracking of medicine quantities across different batches.
+- **Expiry Management**: Proactive alerts for medicines approaching their expiration date.
+- **Regulatory Compliance**: Maintaining a rigorous link between prescriptions and sales of restricted substances.
+- **Financial Reporting**: Tracking revenue and employee performance.
+
+---
 
 ## 2. ER Diagram and Relational Schema
-The system is built on a relational model consisting of 10 tables:
+The database is modeled to capture the complex relationships between healthcare providers, inventory, and retail transactions.
 
-1.  **Categories**: Hierarchical categorization of medicines (self-referencing).
-2.  **Suppliers**: Entities providing medicine stock.
-3.  **Medicines**: Master list of pharmaceutical products.
-4.  **Employees**: Staff members including pharmacists and managers (self-referencing).
-5.  **Patients**: Customers receiving healthcare services.
-6.  **Stock Batches**: Specific batches of medicines received from suppliers.
-7.  **Prescriptions**: Orders from doctors for specific patients.
-8.  **Prescription Items**: Specific medicines and dosages in a prescription.
-9.  **Sales**: Records of individual transactions.
-10. **Sale Items**: Detailed breakdown of items sold in each transaction.
+### Entities:
+- **Categories**: Supports a hierarchical structure (e.g., "Antibiotics" -> "Beta-lactams").
+- **Suppliers**: Local and regional distributors like "Neman-Pharm" or "Amanat Pharm".
+- **Medicines**: The master catalog of products, including generic and brand names.
+- **Employees**: Staff management including a reporting hierarchy (Pharmacists report to Managers).
+- **Patients**: Local residents, identified by contact details.
+- **Stock Batches**: The most granular level of inventory, tracking individual shipments and expiry.
+- **Prescriptions & Prescription Items**: Documentation of doctor-ordered medications.
+- **Sales & Sale Items**: Transactional records capturing the point-of-sale data.
+
+---
 
 ## 3. Normalization Analysis
-The schema was designed with 3rd Normal Form (3NF) in mind:
-- **1NF**: All tables have atomic values and unique primary keys.
-- **2NF**: No partial dependencies; all non-key attributes are fully dependent on the primary key.
-- **3NF**: No transitive dependencies; non-key attributes are only dependent on the primary key.
+Each table has been analyzed to ensure it meets **3rd Normal Form (3NF)** to prevent update, insertion, and deletion anomalies.
 
-For example, in the `Medicines` table, all attributes (name, generic_name, manufacturer) depend solely on `medicine_id`. The relationship between sales and medicines is mediated by `sale_items` and `stock_batches` to maintain integrity and track specific batch movements.
+### Functional Dependencies (FDs):
+1. **Medicines**: `medicine_id -> name, generic_name, manufacturer, category_id`.
+   - *Justification*: There are no transitive dependencies. Category info is in its own table.
+2. **Employees**: `employee_id -> full_name, email, phone, role, manager_id`.
+   - *Justification*: All attributes depend solely on the employee ID.
+3. **Stock Batches**: `batch_id -> medicine_id, supplier_id, quantity, unit_price, expiry_date`.
+   - *Justification*: The unit price is specific to the batch (inflation/supplier changes).
 
-## 4. Indexing Strategy
-To optimize performance, we implemented several indexes:
-- `idx_medicines_name`: Speeds up medicine lookups by name.
-- `idx_stock_expiry`: Facilitates quick retrieval of expiring stock for alerts.
-- `idx_sales_date`: Optimizes reporting on sales over specific time periods.
-- `idx_prescriptions_patient`: Enables fast retrieval of a patient's prescription history.
+### Normal Form Justification:
+- **1NF**: Every column contains atomic values; no repeating groups.
+- **2NF**: Every non-key attribute is fully functionally dependent on the primary key.
+- **3NF**: No non-key attribute is transitively dependent on the primary key. For example, we do not store "Category Name" in the `Medicines` table; we store `category_id` which references the `Categories` table.
 
-## 5. Security and Roles
-The system uses PostgreSQL's Role-Based Access Control (RBAC):
-- **Admin**: Full control over all data and system configurations.
-- **Pharmacist**: Permissions to view medicines, manage patients, and process sales/prescriptions. Restricted from supplier and inventory pricing data.
-- **Inventory Manager**: Permissions to manage stock levels and supplier information. Restricted from viewing patient personal data.
+---
 
-## 6. Seed Data Audit
-The database is seeded with 500+ records of realistic data reflecting the Kyrgyz context:
-- **Names**: Kyrgyz and regional names (e.g., Aigerim Sultanova, Nurlan Bekov).
-- **Phones**: +996 format with real operator prefixes (555, 700, 770).
-- **Addresses**: Local cities and street names (Bishkek, Naryn, Osh).
-- **Distribution**: Non-uniform distribution of sales and inventory to simulate real-world activity peaks.
+## 4. SQL Implementation & Sample Queries
+The implementation uses PostgreSQL 16. The schema is enforced with foreign keys, `NOT NULL` constraints, and `CHECK` constraints (e.g., `quantity >= 0`).
+
+### Sample Queries (Demonstrating Complexity):
+1. **Revenue by Employee**: Uses `JOIN` and `GROUP BY` to audit performance.
+2. **Category Hierarchy Search**: Uses a subquery to find all medicines in a parent category.
+3. **Frequent Patients**: Uses `HAVING` to identify customers with high medical needs.
+4. **Stock Valuation**: Calculates financial asset value per supplier.
+5. **Dead Stock Analysis**: Uses `NOT IN` with a subquery to find products that haven't sold.
+6. **Management Hierarchy**: Uses a `LEFT JOIN` on the same table (Self-join) to show the org chart.
+7. **Payment Trends**: Analyzes preferred local payment methods (M-Bank vs Cash).
+8. **Top Sellers**: Identifies high-demand inventory.
+9. **High-Value Customer CTE**: Uses a Common Table Expression to segment customers.
+10. **Prescription Audit**: Triple-join to link patients to specific medicines prescribed.
+
+---
+
+## 5. Seed Data Audit
+The database is populated with **500+ rows** of realistic data generated to reflect the Naryn context.
+
+- **Primary Entities**: 100 Medicines, 50 Employees, 100 Patients.
+- **Transactions**: 251 Sales, 200 Prescriptions.
+- **Distribution Patterns**:
+    - **Pareto Principle**: A small group of "top" patients account for a significant portion of prescriptions.
+    - **Temporal Clustering**: Sales timestamps reflect peaks during morning and early evening business hours.
+    - **Regional Grounding**: Addresses utilize real Naryn street names (ul. Lenina) and Bishkek districts.
+- **Data Sources**: Combination of hand-written reference data (categories) and Python-scripted generation (Faker-style) for names and numbers.
+
+---
+
+## 6. Advanced Features
+- **Indexing Strategy**: B-Tree indexes created on `medicines.name` for search, `stock_batches.expiry_date` for inventory management, and `sales.sale_date` for reporting.
+- **Views**:
+    - `expiring_soon`: Lists stock expiring within 90 days.
+    - `low_stock_alerts`: Identifies items below 20 units.
+    - `monthly_sales_summary`: Aggregates revenue for business intelligence.
+- **Transactions**: The `06_transactions.sql` script demonstrates an atomic sale where the stock quantity is decremented only if the sale record is successfully created, ensuring data consistency.
+- **Security**: Defined `admin`, `pharmacist`, and `manager` roles with specific `GRANT`/`REVOKE` permissions.
+
+---
 
 ## 7. Reflection
-Designing the many-to-many relationship between Sales and Stock Batches was the most challenging aspect, as it required careful tracking of which specific batch was being sold to maintain accurate inventory levels. Future improvements could include a more robust prescription verification logic and integration with a barcode scanning system.
+The project successfully bridges the gap between theoretical relational algebra and practical implementation. The most significant challenge was maintaining referential integrity during the automated seeding process—ensuring that sale items correctly referenced existing batches that had sufficient quantity. If I were to extend this, I would implement a trigger-based audit log to track every manual change to medicine prices.
+
+---
 
 ## 8. AI Usage Appendix
-AI was used to:
-1.  Generate realistic seed data patterns in the `generate_seed.py` script.
-2.  Draft initial SQL table structures based on provided requirements.
-3.  Design the basic Flask frontend layout and database connection logic.
+AI (Claude 3.5 Sonnet) was utilized as an "Integral" part of the development process:
+- **Schema Design**: AI assisted in identifying optimal relationships for the self-referencing employee table.
+- **Data Generation**: AI provided the logic for generating Kyrgyz-specific names and phone formats in the seeding script.
+- **Frontend**: The Flask application structure and Bootstrap integration were drafted with AI assistance.
 
-*Declaration: All AI-generated content has been reviewed, edited, and verified for accuracy and compliance with project requirements.*
+*Declaration: I have reviewed every line of SQL and Python code generated or assisted by AI to ensure it meets the project's technical and ethical standards.*
