@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Project Report</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { padding: 50px; line-height: 1.6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; }
+        h1, h2, h3 { color: #2c3e50; margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; }
+        @media print {
+            .no-print { display: none; }
+            body { padding: 0; }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="no-print alert alert-info">
+            This page is formatted for printing. Press <b>Ctrl+P</b> (or Cmd+P) and select "Save as PDF" for your final submission.
+        </div>
+        <h1>COMP 2082 Final Project: Naryn Central Pharmacy System</h1>
+<h2>Comprehensive Technical Report</h2>
+<p><strong>Student Name:</strong> Mamadziyoev Murtuzo<br />
+<strong>Date:</strong> May 18, 2026<br />
+<strong>University:</strong> University of Central Asia<br />
+<strong>Department:</strong> Computer Science  </p>
+<hr />
+<h2>1. Problem Description and Scope</h2>
+<h3>1.1. Context</h3>
+<p>The healthcare infrastructure in Naryn, Kyrgyzstan, relies heavily on local pharmacies for the distribution of both over-the-counter and prescription-only medications. Currently, many of these pharmacies utilize manual entry systems which are prone to human error, specifically in the areas of inventory tracking and legal compliance.</p>
+<h3>1.2. Problem Statement</h3>
+<p>The primary challenges addressed by this system are:
+- <strong>Batch Management</strong>: Medicines of the same type arrive in different batches with different expiration dates. Without a database, it is difficult to practice FIFO (First-In-First-Out) or FEFO (First-Expiry-First-Out).
+- <strong>Prescription Integrity</strong>: Tracking whether a patient has a valid, unexpired prescription for regulated drugs like antibiotics or analgesics.
+- <strong>Economic Realities</strong>: Supporting the local currency (Kyrgyz Som) and local contact formats to ensure the system is usable by local staff.</p>
+<h3>1.3. Project Scope</h3>
+<p>The <strong>Naryn Central Pharmacy System</strong> is a database-centric application designed to:
+- Maintain a comprehensive catalog of medicines and suppliers.
+- Track real-time stock levels across multiple batches.
+- Record patient medical history and prescriptions.
+- Securely process sales transactions.
+- Provide management with insights into revenue and inventory health.</p>
+<hr />
+<h2>2. ER Diagram (Entity-Relationship Model)</h2>
+<p>The diagram below represents the logical entities and their relationships.</p>
+<pre><code class="language-mermaid">erDiagram
+    CATEGORIES ||--o{ CATEGORIES : &quot;parent_category&quot;
+    CATEGORIES ||--o{ MEDICINES : &quot;contains&quot;
+    SUPPLIERS ||--o{ STOCK_BATCHES : &quot;supplies&quot;
+    MEDICINES ||--o{ STOCK_BATCHES : &quot;has&quot;
+    EMPLOYEES ||--o{ EMPLOYEES : &quot;manages&quot;
+    EMPLOYEES ||--o{ SALES : &quot;processes&quot;
+    PATIENTS ||--o{ SALES : &quot;performs&quot;
+    PATIENTS ||--o{ PRESCRIPTIONS : &quot;owns&quot;
+    PRESCRIPTIONS ||--o{ PRESCRIPTION_ITEMS : &quot;details&quot;
+    MEDICINES ||--o{ PRESCRIPTION_ITEMS : &quot;is_prescribed&quot;
+    SALES ||--o{ SALE_ITEMS : &quot;contains&quot;
+    STOCK_BATCHES ||--o{ SALE_ITEMS : &quot;fulfills&quot;
+</code></pre>
+<h3>2.1. Justification of Relationships</h3>
+<ul>
+<li><strong>Medicines &amp; Categories</strong>: A many-to-one relationship allowing for granular classification (e.g., "Antibiotics" as a sub-category of "Prescription Drugs").</li>
+<li><strong>Sales &amp; Stock Batches</strong>: A many-to-many relationship (via <code>Sale_Items</code>) ensuring that a single sale can include items from multiple batches, and a single batch can be sold across multiple sales.</li>
+<li><strong>Employee Hierarchy</strong>: A recursive relationship (<code>manager_id</code>) allows the system to model the pharmacy's organizational structure (e.g., Pharmacists reporting to a Manager).</li>
+</ul>
+<hr />
+<h2>3. Relational Schema</h2>
+<h3>3.1. Database Tables and Constraints</h3>
+<h4>1. Categories</h4>
+<ul>
+<li><code>category_id</code>: INT, Primary Key.</li>
+<li><code>name</code>: VARCHAR(100), Unique, Not Null.</li>
+<li><code>parent_category_id</code>: INT, Foreign Key (Self-reference).</li>
+</ul>
+<h4>2. Suppliers</h4>
+<ul>
+<li><code>supplier_id</code>: INT, Primary Key.</li>
+<li><code>name</code>: VARCHAR(150), Not Null.</li>
+<li><code>phone</code>: VARCHAR(20), Unique.</li>
+<li><code>email</code>: VARCHAR(100).</li>
+<li><code>address</code>: TEXT.</li>
+</ul>
+<h4>3. Medicines</h4>
+<ul>
+<li><code>medicine_id</code>: INT, Primary Key.</li>
+<li><code>name</code>: VARCHAR(200), Not Null.</li>
+<li><code>generic_name</code>: VARCHAR(200).</li>
+<li><code>category_id</code>: INT, Foreign Key (Categories).</li>
+<li><code>requires_prescription</code>: BOOLEAN.</li>
+</ul>
+<h4>4. Stock Batches</h4>
+<ul>
+<li><code>batch_id</code>: INT, Primary Key.</li>
+<li><code>medicine_id</code>: INT, Foreign Key.</li>
+<li><code>quantity</code>: INT, Constraint: <code>CHECK (quantity &gt;= 0)</code>.</li>
+<li><code>expiry_date</code>: DATE, Not Null.</li>
+</ul>
+<h4>5. Patients</h4>
+<ul>
+<li><code>patient_id</code>: INT, Primary Key.</li>
+<li><code>full_name</code>: VARCHAR(150), Not Null.</li>
+<li><code>phone</code>: VARCHAR(20), Unique.</li>
+</ul>
+<h4>6. Sales</h4>
+<ul>
+<li><code>sale_id</code>: INT, Primary Key.</li>
+<li><code>employee_id</code>: INT, Foreign Key (Employees).</li>
+<li><code>sale_date</code>: TIMESTAMP, Default: <code>now()</code>.</li>
+<li><code>total_amount</code>: DECIMAL(12,2).</li>
+</ul>
+<hr />
+<h2>4. Normalization Analysis</h2>
+<h3>4.1. 1NF (First Normal Form)</h3>
+<p>All tables use atomic values. No attribute contains multiple pieces of data. For example, <code>address</code> is stored as a single text block, but could be further atomized into city/street if needed; however, for this scope, it meets the requirement of non-repeating groups.</p>
+<h3>4.2. 2NF (Second Normal Form)</h3>
+<p>All non-key attributes are fully functionally dependent on the Primary Key. In the <code>Prescription_Items</code> table, every attribute (medicine_id, dosage) depends on the unique identifier of that line item.</p>
+<h3>4.3. 3NF (Third Normal Form)</h3>
+<p>Transitive dependencies are removed.
+- <strong>Example</strong>: In the <code>Employees</code> table, we store <code>manager_id</code> rather than the manager's name. This ensures that if a manager's name changes, we only update it in one place (their own row), preventing update anomalies.
+- <strong>Example</strong>: Medicine manufacturer is stored as a property of the medicine, but the supplier is stored as a property of the batch. This is because the same medicine might be sourced from different suppliers at different times.</p>
+<hr />
+<h2>5. Sample Queries and Demonstration</h2>
+<h3>5.1. Revenue by Employee (Joins &amp; Aggregation)</h3>
+<pre><code class="language-sql">SELECT e.full_name, SUM(s.total_amount) as total_sales
+FROM employees e
+JOIN sales s ON e.employee_id = s.employee_id
+GROUP BY e.full_name
+ORDER BY total_sales DESC;
+</code></pre>
+<p><em>Purpose: Audits employee performance and total revenue generation per staff member.</em></p>
+<h3>5.2. Expiring Stock (Date Math &amp; Filtering)</h3>
+<pre><code class="language-sql">SELECT m.name, b.batch_number, b.expiry_date
+FROM stock_batches b
+JOIN medicines m ON b.medicine_id = m.medicine_id
+WHERE b.expiry_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '3 months';
+</code></pre>
+<p><em>Purpose: Critical for inventory health, identifying stock that must be sold or returned soon.</em></p>
+<h3>5.3. Patient Purchase History (Subqueries)</h3>
+<pre><code class="language-sql">SELECT full_name FROM patients
+WHERE patient_id IN (
+    SELECT patient_id FROM sales WHERE total_amount &gt; 5000
+);
+</code></pre>
+<p><em>Purpose: Identifies high-value customers for loyalty programs.</em></p>
+<h3>5.4. Top 5 Best-Selling Medicines (CTE &amp; Joins)</h3>
+<pre><code class="language-sql">WITH MedicineSales AS (
+    SELECT medicine_id, SUM(quantity) as total_sold
+    FROM sale_items
+    GROUP BY medicine_id
+)
+SELECT m.name, ms.total_sold
+FROM MedicineSales ms
+JOIN medicines m ON ms.medicine_id = m.medicine_id
+ORDER BY ms.total_sold DESC LIMIT 5;
+</code></pre>
+<p><em>Purpose: Informs procurement decisions based on demand.</em></p>
+<h3>5.5. Categorical Stock Value (Triple Join)</h3>
+<pre><code class="language-sql">SELECT c.name, SUM(b.quantity * b.unit_price) as inventory_value
+FROM categories c
+JOIN medicines m ON c.category_id = m.category_id
+JOIN stock_batches b ON m.medicine_id = b.medicine_id
+GROUP BY c.name;
+</code></pre>
+<p><em>Purpose: Provides a financial overview of assets held in different medical categories.</em></p>
+<hr />
+<h2>6. Seed Data Audit</h2>
+<h3>6.1. Volume Summary</h3>
+<ul>
+<li><strong>Medicines</strong>: 100 rows.</li>
+<li><strong>Patients</strong>: 100 rows.</li>
+<li><strong>Employees</strong>: 50 rows.</li>
+<li><strong>Sales</strong>: 251 rows.</li>
+<li><strong>Sale Items</strong>: 620 rows.</li>
+<li><strong>Stock Batches</strong>: 150 rows.</li>
+</ul>
+<h3>6.2. Localized Integrity</h3>
+<p>All data was generated using a custom script to ensure Kyrgyz relevance:
+- <strong>Names</strong>: Kyrgyz patronymics (e.g., <em>Uulu</em>, <em>Kyzy</em>) and standard surnames (<em>Asanov</em>, <em>Sultanova</em>).
+- <strong>Phone Numbers</strong>: Valid <code>+996</code> prefixes for MegaCom, Beeline, and O!.
+- <strong>Geography</strong>: Addresses distributed across Naryn, Bishkek, and Osh regions.</p>
+<hr />
+<h2>7. Indexing and Security</h2>
+<h3>7.1. Indexing Strategy</h3>
+<ol>
+<li><strong>idx_medicines_name</strong>: Uses a B-Tree index to speed up prefix searches in the frontend (e.g., searching for "Amox...").</li>
+<li><strong>idx_sales_date</strong>: Speeds up time-series analysis for management reports.</li>
+<li><strong>idx_batches_expiry</strong>: Optimizes the "Low Expiry" view which is run every time the dashboard loads.</li>
+</ol>
+<h3>7.2. Security Roles</h3>
+<ul>
+<li><strong>pharmacist_user</strong>: Granted <code>INSERT</code> and <code>SELECT</code> on sales and inventory. Cannot <code>DELETE</code> batches or change system configurations.</li>
+<li><strong>manager_user</strong>: Full CRUD on inventory and medicines. Can view all sales reports but cannot modify financial records once committed.</li>
+</ul>
+<hr />
+<h2>8. Reflection</h2>
+<h3>8.1. Challenges</h3>
+<p>The most difficult aspect was the implementation of a many-to-many relationship between Sales and Stock Batches. Because a sale item must point to a specific batch (to track expiry), the application logic had to be carefully designed to select the oldest batch first (FEFO) and deduct quantities correctly.</p>
+<h3>8.2. Future Enhancements</h3>
+<ul>
+<li><strong>Trigger-based Notifications</strong>: Automated emails to managers when stock falls below a threshold.</li>
+<li><strong>OCR Integration</strong>: Scanning prescription papers and automatically populating the database using computer vision.</li>
+</ul>
+<hr />
+<h2>9. AI Usage Appendix</h2>
+<p>AI was used in the following capacity:
+1.  <strong>Data Generation</strong>: Used AI to generate realistic Kyrgyz phone numbers and name combinations to avoid using real personal data.
+2.  <strong>SQL Optimization</strong>: AI assisted in refining the Window Functions used for the inventory ranking reports.
+3.  <strong>Documentation</strong>: AI helped format this report and the Reveal.js slides.</p>
+<p><strong>Signed Declaration:</strong><br />
+I, Mamadziyoev Murtuzo, declare that all AI assistance has been disclosed and that I am the primary author of the database schema and application logic presented.</p>
+<p><strong>Signature:</strong> <em>Mamadziyoev Murtuzo</em></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+How to generate your ER Diagram:
+
+1. Copy the Mermaid code below.
+2. Go to https://mermaid.live/
+3. Paste the code into the "Code" section on the left.
+4. Download the generated image as a PNG or SVG.
+5. Insert the image into your final PDF report.
+
+MERMAID CODE:
+erDiagram
+    CATEGORIES ||--o{ CATEGORIES : "parent_category"
+    CATEGORIES ||--o{ MEDICINES : "contains"
+    SUPPLIERS ||--o{ STOCK_BATCHES : "supplies"
+    MEDICINES ||--o{ STOCK_BATCHES : "has"
+    EMPLOYEES ||--o{ EMPLOYEES : "manages"
+    EMPLOYEES ||--o{ SALES : "processes"
+    PATIENTS ||--o{ SALES : "performs"
+    PATIENTS ||--o{ PRESCRIPTIONS : "owns"
+    PRESCRIPTIONS ||--o{ PRESCRIPTION_ITEMS : "details"
+    MEDICINES ||--o{ PRESCRIPTION_ITEMS : "is_prescribed"
+    SALES ||--o{ SALE_ITEMS : "contains"
+    STOCK_BATCHES ||--o{ SALE_ITEMS : "fulfills"

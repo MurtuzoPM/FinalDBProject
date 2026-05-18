@@ -11,9 +11,6 @@ This project is a PostgreSQL-backed database system for managing a small pharmac
 - **Presentation**: A Reveal.js-based professional slide deck.
 
 ---
-I, Mamadziyoev Murtuzo, hereby declare that the AI usage disclosed above is a complete and honest record of the assistance received during this project. I have reviewed, tested, and am responsible for every line of SQL and Python code included in this submission.
-
-Signed: Mamadziyoev Murtuzo
 
 ## 🚀 Beginner's Guide: How to Run the Project
 
@@ -69,7 +66,7 @@ This keeps the project's libraries organized.
 - **`app.py`**: The main code for the web application.
 - **`reports/project_report.md`**: Your technical project report (Normalization, AI disclosure, etc.).
 - **`reports/defense_slides.html`**: Open this in your browser for your presentation.
-- **`COMP2082_FinalProject_Jules.zip`**: The final archive for submission.
+- **`COMP2082_FinalProject_Mamadziyoev_Murtuzo.zip`**: The final archive for submission.
 
 ---
 
