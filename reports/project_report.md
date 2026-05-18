@@ -1,7 +1,7 @@
 # Project Report: Naryn Central Pharmacy Inventory & Prescription System
 
 **Date**: May 18, 2026
-**Team**: Jules (Individual Project)
+**Team**: Mamadziyoev Murtuzo (Individual Project)
 **Course**: COMP 2082 - Database Management Systems
 
 ---
@@ -102,4 +102,7 @@ AI (Claude 3.5 Sonnet) was utilized as an "Integral" part of the development pro
 - **Data Generation**: AI provided the logic for generating Kyrgyz-specific names and phone formats in the seeding script.
 - **Frontend**: The Flask application structure and Bootstrap integration were drafted with AI assistance.
 
-*Declaration: I have reviewed every line of SQL and Python code generated or assisted by AI to ensure it meets the project's technical and ethical standards.*
+### Signed Declaration
+I, **Mamadziyoev Murtuzo**, hereby declare that the AI usage disclosed above is a complete and honest record of the assistance received during this project. I have reviewed, tested, and am responsible for every line of SQL and Python code included in this submission.
+
+**Signed**: *Mamadziyoev Murtuzo*

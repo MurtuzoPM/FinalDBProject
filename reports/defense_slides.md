@@ -2,7 +2,7 @@
 
 ## Slide 1: Title
 - **Project**: Naryn Central Pharmacy Inventory & Prescription System
-- **Members**: Jules
+- **Members**: Mamadziyoev Murtuzo
 - **Date**: May 2026
 
 ## Slide 2: Problem Statement
