@@ -11,6 +11,9 @@ This project is a PostgreSQL-backed database system for managing a small pharmac
 - **Presentation**: A Reveal.js-based professional slide deck.
 
 ---
+I, Mamadziyoev Murtuzo, hereby declare that the AI usage disclosed above is a complete and honest record of the assistance received during this project. I have reviewed, tested, and am responsible for every line of SQL and Python code included in this submission.
+
+Signed: Mamadziyoev Murtuzo
 
 ## 🚀 Beginner's Guide: How to Run the Project
 
